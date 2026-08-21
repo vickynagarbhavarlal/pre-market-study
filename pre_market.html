@@ -1,7 +1,16 @@
 <!-- INWEALFONEY PRE-MARKET COMPONENT -->
 <div id="inwealfoney-premarket-loader" style="min-height:260px;display:flex;align-items:center;justify-content:center;padding:40px;font-family:Arial,sans-serif;color:#64748b;text-align:center;">
-  Loading today's INWEALFONEY Pre-Market Study…
+  Loading today's Pre-Market Study…
 </div>
+
+<style data-inwealfoney-premarket="true">
+/* WordPress-safe overrides: keep the site's theme, but isolate the study */
+#inwealfoney-premarket-content .brand{display:none !important;}
+#inwealfoney-premarket-content .hero h1,
+#inwealfoney-premarket-content h1{color:#60a5fa !important;}
+#inwealfoney-premarket-content .hero h1 span{color:#60a5fa !important;}
+#inwealfoney-premarket-content .hero{color:#fff !important;}
+</style>
 
 <script>
 (function(){
@@ -33,6 +42,14 @@
     });
 
     loader.replaceWith(host);
+
+    /* Remove the branding line because WordPress already displays the INWEALFONEY brand */
+    host.querySelectorAll('.brand').forEach(function(el){el.remove();});
+
+    /* Prevent the WordPress theme from changing the hero title colour */
+    host.querySelectorAll('.hero h1, .hero h1 span').forEach(function(el){
+      el.style.setProperty('color','#60a5fa','important');
+    });
 
     doc.querySelectorAll('script').forEach(loadScript);
   }
