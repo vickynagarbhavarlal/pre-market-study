@@ -4,17 +4,23 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>INWEALFONEY — Pre-Market Study</title>
-<style>html,body{margin:0;padding:0;background:#f5f7fb;font-family:Arial,sans-serif}#loading{min-height:100vh;display:grid;place-items:center;color:#64748b;font-size:15px}</style>
 </head>
 <body>
-<div id="loading">Loading today's INWEALFONEY Pre-Market Study…</div>
+<div id="loading" style="min-height:100vh;display:grid;place-items:center;color:#64748b;font-family:Arial,sans-serif">Loading today's INWEALFONEY Pre-Market Study…</div>
 <script>
 (async function(){
   try {
-    const url='https://raw.githubusercontent.com/vickynagarbhavarlal/pre-market-study/main/21-08-2026.html?x='+Date.now();
-    const response=await fetch(url,{cache:'no-store'});
-    if(!response.ok) throw new Error('Unable to load study');
-    const html=await response.text();
+    const api='https://api.github.com/repos/vickynagarbhavarlal/pre-market-study/contents/';
+    const r=await fetch(api,{cache:'no-store'});
+    if(!r.ok) throw new Error('GitHub directory unavailable');
+    const files=await r.json();
+    const dates=files.map(x=>x.name.match(/^(\d{2})-(\d{2})-(\d{4})\.html$/)).filter(Boolean).map(m=>({name:m[0],date:new Date(Number(m[3]),Number(m[2])-1,Number(m[1]))})).sort((a,b)=>b.date-a.date);
+    if(!dates.length) throw new Error('No dated study found');
+    const latest=dates[0].name;
+    const raw='https://raw.githubusercontent.com/vickynagarbhavarlal/pre-market-study/main/'+latest+'?v='+Date.now();
+    const page=await fetch(raw,{cache:'no-store'});
+    if(!page.ok) throw new Error('Study unavailable');
+    const html=await page.text();
     document.open();
     document.write(html);
     document.close();
